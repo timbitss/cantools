@@ -374,7 +374,7 @@ SIGNAL_DECLARATION_ENCODE_DECODE_FMT = '''\
  *
  * @return Encoded signal.
  */
-{type_name} {database_name}_{message_name}_{signal_name}_encode(double value);
+{type_name} {database_name}_{message_name}_{signal_name}_encode(float value);
 
 /**
  * Decode given signal by applying scaling and offset.
@@ -383,7 +383,7 @@ SIGNAL_DECLARATION_ENCODE_DECODE_FMT = '''\
  *
  * @return Decoded signal.
  */
-double {database_name}_{message_name}_{signal_name}_decode({type_name} value);
+float {database_name}_{message_name}_{signal_name}_decode({type_name} value);
 
 '''
 
@@ -473,12 +473,12 @@ int {database_name}_{message_name}_unpack(
 '''
 
 SIGNAL_DEFINITION_ENCODE_DECODE_FMT = '''\
-{type_name} {database_name}_{message_name}_{signal_name}_encode(double value)
+{type_name} {database_name}_{message_name}_{signal_name}_encode(float value)
 {{
     return ({type_name})({encode});
 }}
 
-double {database_name}_{message_name}_{signal_name}_decode({type_name} value)
+float {database_name}_{message_name}_{signal_name}_decode({type_name} value)
 {{
     return ({decode});
 }}
@@ -1182,7 +1182,7 @@ def _generate_encode_decode(message):
 
         if offset == 0 and scale == 1:
             encoding = 'value'
-            decoding = '(double)value'
+            decoding = '(float)value'
         elif offset != 0 and scale != 1:
             encoding = '(value - {}) / {}'.format(formatted_offset,
                                                   formatted_scale)
@@ -1192,8 +1192,8 @@ def _generate_encode_decode(message):
             encoding = 'value - {}'.format(formatted_offset)
             decoding = '(double)value + {}'.format(formatted_offset)
         else:
-            encoding = 'value / {}'.format(formatted_scale)
-            decoding = '(double)value * {}'.format(formatted_scale)
+            encoding = 'value / {}f'.format(formatted_scale)
+            decoding = '(float)value * {}f'.format(formatted_scale)
 
         encode_decode.append((encoding, decoding))
 
